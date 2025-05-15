@@ -136,7 +136,7 @@ address {
 }
 
 pre {
-  background: #f2f2f2;
+  background: rgb(242.25, 242.25, 242.25);
   font-family: "Courier 10 Pitch", Courier, monospace;
   margin-bottom: ms(3);
   padding: ms(2);
@@ -267,7 +267,7 @@ table caption {
   font-weight: 600;
 }
 table th {
-  background: #f2f2f2;
+  background: rgb(242.25, 242.25, 242.25);
   font-weight: 500;
 }
 table th,
@@ -281,10 +281,10 @@ table thead th {
   vertical-align: middle;
 }
 table tbody td {
-  background: #fafafa;
+  background: rgb(249.9, 249.9, 249.9);
 }
 table tbody tr:nth-child(2n) td {
-  background: #f7f7f7;
+  background: rgb(247.35, 247.35, 247.35);
 }
 
 /* Float + Clear */
