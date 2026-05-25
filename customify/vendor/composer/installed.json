@@ -1,0 +1,72 @@
+{
+    "packages": [
+        {
+            "name": "pressmaximum/dashboard-kit",
+            "version": "dev-main",
+            "version_normalized": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:PressMaximum/dashboard-kit.git",
+                "reference": "ce259086d13f323efc720ba02487c36be06e30b4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PressMaximum/dashboard-kit/zipball/ce259086d13f323efc720ba02487c36be06e30b4",
+                "reference": "ce259086d13f323efc720ba02487c36be06e30b4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6"
+            },
+            "time": "2026-05-20T19:02:05+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "PressMaximum\\DashboardKit\\": "includes/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "PressMaximum\\DashboardKit\\Tests\\": "tests/php/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "test:coverage": [
+                    "phpunit --coverage-text"
+                ]
+            },
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "PressMaximum",
+                    "homepage": "https://pressmaximum.com"
+                }
+            ],
+            "description": "PHP utilities for the @pressmaximum/dashboard-kit WordPress dashboard library: REST helpers, admin menu helpers, asset enqueue, editor integration.",
+            "homepage": "https://github.com/pressmaximum/dashboard-kit",
+            "keywords": [
+                "dashboard",
+                "pressmaximum",
+                "wordpress",
+                "wp-admin"
+            ],
+            "support": {
+                "issues": "https://github.com/pressmaximum/dashboard-kit/issues",
+                "source": "https://github.com/pressmaximum/dashboard-kit"
+            },
+            "install-path": "../pressmaximum/dashboard-kit"
+        }
+    ],
+    "dev": false,
+    "dev-package-names": []
+}
