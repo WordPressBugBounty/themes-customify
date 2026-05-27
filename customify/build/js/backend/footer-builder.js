@@ -6913,7 +6913,15 @@ const PRESETS = {
   4: [{
     fr: [1, 1, 1, 1]
   }, {
+    fr: [2, 1, 1, 1]
+  }, {
     fr: [1, 2, 2, 1]
+  },
+  // fr shorter than count → grid items wrap to a new row.
+  // fr=[1,1] with 4 items renders a 2×2 grid (50/50 on each row).
+  {
+    fr: [1, 1],
+    rows: 2
   }, {
     stacked: true
   }],
@@ -6978,7 +6986,8 @@ function DeviceSwitcher({
 function LayoutSvg({
   fr,
   stacked,
-  count
+  count,
+  rows
 }) {
   const W = 48;
   const H = 30;
@@ -7006,20 +7015,26 @@ function LayoutSvg({
     });
   }
   const total = fr.reduce((a, b) => a + b, 0);
-  const totalG = GAP * (fr.length - 1);
-  let x = 0;
-  const rects = fr.map((f, i) => {
-    const w = f / total * (W - totalG);
-    const rect = /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("rect", {
-      x: x,
-      y: 2,
-      width: Math.max(w, 1),
-      height: H - 4,
-      rx: 2
-    }, i);
-    x += w + GAP;
-    return rect;
-  });
+  const totalGX = GAP * (fr.length - 1);
+  const nRows = Math.max(1, parseInt(rows, 10) || 1);
+  const totalGY = GAP * (nRows - 1);
+  const rowH = (H - 4 - totalGY) / nRows;
+  const rects = [];
+  for (let r = 0; r < nRows; r++) {
+    let x = 0;
+    const y = 2 + r * (rowH + GAP);
+    fr.forEach((f, i) => {
+      const w = f / total * (W - totalGX);
+      rects.push(/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("rect", {
+        x: x,
+        y: y,
+        width: Math.max(w, 1),
+        height: Math.max(rowH, 1),
+        rx: 2
+      }, `${r}-${i}`));
+      x += w + GAP;
+    });
+  }
   return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("svg", {
     width: W,
     height: H,
@@ -7211,15 +7226,17 @@ function RowLayout({
         children: presets.map((preset, idx) => {
           const isStacked = !!preset.stacked;
           const active = isStacked ? fr.length === 1 : JSON.stringify(fr) === JSON.stringify(preset.fr);
+          const title = isStacked ? 'stacked' : preset.rows ? `${preset.rows}×${preset.fr.length} (${preset.fr.join(':')})` : preset.fr.join(':');
           return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("button", {
             type: "button",
             className: `cb-row-layout__preset-btn${active ? ' is-active' : ''}`,
-            title: isStacked ? 'stacked' : preset.fr.join(':'),
+            title: title,
             onClick: () => handlePreset(preset),
             children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(LayoutSvg, {
               fr: preset.fr || [1],
               stacked: isStacked,
-              count: count
+              count: count,
+              rows: preset.rows
             })
           }, idx);
         })
