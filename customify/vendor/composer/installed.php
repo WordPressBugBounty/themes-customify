@@ -3,7 +3,7 @@
         'name' => 'pressmaximum/customify',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '3aeb8102fa1a627ef101684d3cb77ee12c437c76',
+        'reference' => 'b1637ecfb357f97209f96153971a9d4ea1f3f8fe',
         'type' => 'wordpress-theme',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'pressmaximum/customify' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '3aeb8102fa1a627ef101684d3cb77ee12c437c76',
+            'reference' => 'b1637ecfb357f97209f96153971a9d4ea1f3f8fe',
             'type' => 'wordpress-theme',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
