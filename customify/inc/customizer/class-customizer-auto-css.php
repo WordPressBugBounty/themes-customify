@@ -50,6 +50,19 @@ class Customify_Customizer_Auto_CSS
 	);
 
 	/**
+	 * CSS variables emitted at :root scope, bucketed per device so each
+	 * bucket can be wrapped in its own media query at flush time.
+	 *
+	 * @var array
+	 */
+	private $css_root = array(
+		'all'     => '',
+		'desktop' => '',
+		'tablet'  => '',
+		'mobile'  => '',
+	);
+
+	/**
 	 * Default shadow fields
 	 *
 	 * @var array
@@ -61,6 +74,26 @@ class Customify_Customizer_Auto_CSS
 		'blur'   => 0,
 		'spread' => 0,
 		'inset'  => null,
+	);
+
+	/**
+	 * Foundational typography settings that emit :root tokens.
+	 * setting name => semantic var segment. Single source of truth for
+	 * both typography_field_uses_vars() (route gate) and
+	 * typography_var_name() (token name). Keep in lockstep with the JS
+	 * mirror's TYPO_VAR_MAP in src/backend/customizer/js/auto-css.js.
+	 *
+	 * @var array
+	 */
+	const TYPO_VAR_MAP = array(
+		'global_typography_base_p'       => 'body',
+		'global_typography_base_heading' => 'heading',
+		'global_typography_heading_h1'   => 'h1',
+		'global_typography_heading_h2'   => 'h2',
+		'global_typography_heading_h3'   => 'h3',
+		'global_typography_heading_h4'   => 'h4',
+		'global_typography_heading_h5'   => 'h5',
+		'global_typography_heading_h6'   => 'h6',
 	);
 
 	/**
@@ -177,6 +210,25 @@ class Customify_Customizer_Auto_CSS
 
 	function setup_slider($value, $format)
 	{
+		// Slider control normally saves `{value, unit}` once the user drags
+		// it. But the field's `default` is declared as a bare scalar
+		// (e.g. `'default' => 800` on narrow_width / 1248 on container_width),
+		// which is what `get_theme_mod()` returns until a save happens. Pass
+		// that scalar straight to `wp_parse_args()` and it returns the
+		// defaults (`value => null`) — so `setup_slider` returns false and
+		// the entire `css_format` rule never reaches the page. Visible
+		// symptom: a fresh install with no Customizer save would silently
+		// drop narrow_width and container_width rules, falling layout back
+		// to theme.json's 863px/1200px instead of the field defaults.
+		// Cast the scalar to the canonical shape here so the rule lands on
+		// first paint without needing a manual Customizer save.
+		if (is_scalar($value) && !is_bool($value) && '' !== $value) {
+			$value = array(
+				'value' => $value,
+				'unit'  => 'px',
+			);
+		}
+
 		$value = wp_parse_args(
 			$value,
 			array(
@@ -388,7 +440,7 @@ class Customify_Customizer_Auto_CSS
 	 *
 	 * Selector: `{$field['selector']} .col-v2-<colKey>`
 	 *
-	 * @since 0.5.0
+	 * @since 0.4.19
 	 */
 	function columns_settings($field, $values = null)
 	{
@@ -1015,6 +1067,97 @@ class Customify_Customizer_Auto_CSS
 		return join("\r\n\t", $css);
 	}
 
+	/**
+	 * Whether a typography field emits :root CSS variables (vars mode)
+	 * or selector-scoped literal CSS (legacy). Vars (tokens) are
+	 * restricted to the FOUNDATIONAL typography — Base body
+	 * (`global_typography_base_p`), the shared Heading family/weight
+	 * (`global_typography_base_heading`) and the h1–h6 type scale
+	 * (`global_typography_heading_h{1..6}`). These are 1-to-many
+	 * (inherited document-wide / shared across every heading) so a
+	 * :root token earns its place.
+	 *
+	 * Component-leaf typography — site title, tagline, widget title —
+	 * plus per-component typography (header builder items, footer
+	 * copyright, blog read-more, breadcrumb, WC cart) is 1-to-1, so it
+	 * keeps the legacy selector-scoped literal output. The leaf SCSS
+	 * rules still reuse the foundational tokens (e.g. site title reads
+	 * `--customify-typo-heading-font-family`) without minting their own.
+	 *
+	 * Sites can override the decision with the
+	 * `customify/typography/field_uses_vars` filter — return false
+	 * to force a specific field through the legacy path, or true to
+	 * opt a non-foundational field into vars (requires adding an SCSS
+	 * consumer at the matching selector).
+	 *
+	 * @since 0.4.19
+	 *
+	 * @param array $field  The field config (must include `name`).
+	 * @return bool
+	 */
+	public function typography_field_uses_vars($field)
+	{
+		$name = isset($field['name']) ? (string) $field['name'] : '';
+		// Foundational typography only (see self::TYPO_VAR_MAP): Base
+		// body, shared Heading family/weight, h1–h6 type scale. Leaf
+		// roles (site title, tagline, widget title) fall through to
+		// selector-scoped literal.
+		$tokenized = isset(self::TYPO_VAR_MAP[$name]);
+		return (bool) apply_filters('customify/typography/field_uses_vars', $tokenized, $field);
+	}
+
+	/**
+	 * Build the CSS custom-property name for a typography setting +
+	 * property pair. The foundational typography settings (Base body,
+	 * Heading, h1–h6) map to short, explicit semantic names; other
+	 * (opted-in) fields fall back to a prefix-strip + kebab.
+	 *
+	 *   global_typography_base_p, font-size      → --customify-typo-body-font-size
+	 *   global_typography_base_heading, weight    → --customify-typo-heading-font-weight
+	 *   global_typography_heading_h1, font-size   → --customify-typo-h1-font-size
+	 *
+	 * @since 0.4.19
+	 *
+	 * @param string $setting_name  Raw Customizer setting name.
+	 * @param string $property      Kebab-case CSS property.
+	 * @return string
+	 */
+	public function typography_var_name($setting_name, $property)
+	{
+		$name = (string) $setting_name;
+
+		// Foundational settings map to short, explicit semantic names —
+		// single source of truth in self::TYPO_VAR_MAP (lockstep w/ JS).
+		if (isset(self::TYPO_VAR_MAP[$name])) {
+			return '--customify-typo-' . self::TYPO_VAR_MAP[$name] . '-' . $property;
+		}
+
+		// Fallback for fields opted into vars mode via
+		// customify/typography/field_uses_vars that aren't foundation
+		// settings: strip the known prefix/suffixes, then kebab.
+		$prefix = 'global_typography_';
+		if (strlen($name) > strlen($prefix) && 0 === strpos($name, $prefix)) {
+			$name = substr($name, strlen($prefix));
+		}
+		$suffix_strips = array(
+			'_modal_font_size',
+			'_typography',
+			'_font_size',
+			'_typo',
+		);
+		foreach ($suffix_strips as $suffix) {
+			$len = strlen($suffix);
+			if (strlen($name) > $len && substr($name, -$len) === $suffix) {
+				$name = substr($name, 0, -$len);
+				break;
+			}
+		}
+
+		$name = str_replace('_', '-', $name);
+
+		return '--customify-typo-' . $name . '-' . $property;
+	}
+
 	function typography($field)
 	{
 		$values = Customify()->get_setting($field['name']);
@@ -1042,6 +1185,17 @@ class Customify_Customizer_Auto_CSS
 			$fields[$f['name']] = $f;
 		}
 
+		// Honor per-field `fields` overrides — disabling a key (=> false)
+		// drops it from the emit loop so saved-but-unsupported values
+		// don't leak into the output. Mirrored in auto-css.js.
+		if (!empty($field['fields']) && is_array($field['fields'])) {
+			foreach ($field['fields'] as $key => $enabled) {
+				if (false === $enabled) {
+					unset($fields[$key]);
+				}
+			}
+		}
+
 		if (isset($fields['font'])) {
 			$code['font'] = $this->setup_font(
 				array(
@@ -1053,11 +1207,11 @@ class Customify_Customizer_Auto_CSS
 			);
 		}
 
-		if (isset($values['style']) && $values['style']) {
-
-			if ($values['style'] && 'default' !== $values['style']) {
-				$code['style'] = 'font-style: ' . $values['style'] . ';';
-			}
+		// Gate on $fields['style'] too — a role that disabled the style
+		// sub-field (e.g. base_heading) must not leak a saved font-style
+		// into the output. Mirrors how font_weight / text_* are gated.
+		if (isset($fields['style']) && isset($values['style']) && $values['style'] && 'default' !== $values['style']) {
+			$code['style'] = 'font-style: ' . $values['style'] . ';';
 		}
 
 		// Font Weight.
@@ -1145,16 +1299,101 @@ class Customify_Customizer_Auto_CSS
 		}
 
 		$devices_css = apply_filters('customify/customizer/auto_css', $devices_css, $field, $this);
+
+		// Only foundational typography (Base body, shared Heading,
+		// h1–h6 scale — see typography_field_uses_vars) emits :root
+		// tokens. Component-leaf global typography (site title, tagline,
+		// widget title) and per-component typography (header builder
+		// items, footer copyright, etc.) fall through to selector-scoped
+		// literal output here.
+		if (! $this->typography_field_uses_vars($field)) {
+			foreach ($devices_css as $device => $els) {
+				if (!empty($els)) {
+					$this->css[$device] .= "{$field['selector']} {\r\n\t" . join("\r\n\t", $els) . "\r\n}";
+				}
+			}
+
+			$code = array_filter($code);
+			if (!empty($code)) {
+				$this->css['all'] .= "{$field['selector']} {\r\n\t" . join("\r\n\t", $code) . "\r\n}";
+			}
+			return;
+		}
+
+		// Vars mode (default): split per-property. Core font-identity
+		// props (family / weight / size / line-height) emit :root vars —
+		// the typography token surface. Cosmetic props (letter-spacing,
+		// text-decoration, text-transform, font-style) are NOT tokenized;
+		// they emit as selector-scoped literal CSS at $field['selector']
+		// only when the user set them. The setting keeps working exactly
+		// as before without inflating the :root token namespace.
+		//
+		// Only font_size / line_height are device-scoped, and both are
+		// core, so every $devices_css entry goes straight to :root vars.
 		foreach ($devices_css as $device => $els) {
-			if (!empty($els)) {
-				$this->css[$device] .= "{$field['selector']} {\r\n\t" . join("\r\n\t", $els) . "\r\n}";
+			if (empty($els)) {
+				continue;
+			}
+			$vars = $this->code_to_root_vars($field['name'], $els);
+			if (!empty($vars)) {
+				if ('' !== $this->css_root[$device]) {
+					$this->css_root[$device] .= "\r\n\t";
+				}
+				$this->css_root[$device] .= join("\r\n\t", $vars);
 			}
 		}
 
 		$code = array_filter($code);
-		if (!empty($code)) {
-			$this->css['all'] .= "{$field['selector']} {\r\n\t" . join("\r\n\t", $code) . "\r\n}";
+
+		// Cosmetic props → selector-scoped literal CSS (no token).
+		$cosmetic_keys = array('style', 'text_decoration', 'text_transform', 'letter_spacing');
+		$cosmetic_flip = array_flip($cosmetic_keys);
+		$cosmetic      = array_intersect_key($code, $cosmetic_flip);
+		if (!empty($cosmetic)) {
+			$this->css['all'] .= "{$field['selector']} {\r\n\t" . join("\r\n\t", $cosmetic) . "\r\n}";
 		}
+
+		// Core props → :root vars.
+		$core = array_diff_key($code, $cosmetic_flip);
+		if (!empty($core)) {
+			$vars = $this->code_to_root_vars($field['name'], $core);
+			if (!empty($vars)) {
+				if ('' !== $this->css_root['all']) {
+					$this->css_root['all'] .= "\r\n\t";
+				}
+				$this->css_root['all'] .= join("\r\n\t", $vars);
+			}
+		}
+	}
+
+	/**
+	 * Convert an array of literal "property: value;" CSS lines (the
+	 * shape typography() builds for legacy emit) into custom-property
+	 * lines scoped to a typography setting. Property name is parsed
+	 * from each line so we don't need to special-case the array keys.
+	 *
+	 * @since 0.4.19
+	 *
+	 * @param string $setting_name  The Customizer setting name.
+	 * @param array  $code_map      Map of arbitrary keys → "prop: val;" CSS lines.
+	 * @return array  List of "--customify-typo-…-prop: val;" lines.
+	 */
+	private function code_to_root_vars($setting_name, $code_map)
+	{
+		$vars = array();
+		foreach ((array) $code_map as $css_line) {
+			$css_line = trim($css_line);
+			if ('' === $css_line) {
+				continue;
+			}
+			if (!preg_match('/^([a-z-]+)\s*:\s*(.+?);?\s*$/i', $css_line, $m)) {
+				continue;
+			}
+			$property = strtolower($m[1]);
+			$value    = trim($m[2]);
+			$vars[]   = $this->typography_var_name($setting_name, $property) . ': ' . $value . ';';
+		}
+		return $vars;
 	}
 
 	/**
@@ -1435,7 +1674,28 @@ class Customify_Customizer_Auto_CSS
 	{
 		$this->loop_fields($fields);
 		$css_code = '';
-		$i        = 0;
+
+		// Flush :root custom-property buckets first so the literal CSS
+		// downstream can refer to them via var(). Each non-empty device
+		// bucket gets wrapped in a single :root { ... } block — many
+		// typography fields collapse into one rule per device — and the
+		// whole block is wrapped in the matching media query template.
+		$i = 0;
+		foreach ($this->css_root as $device => $vars_chunk) {
+			if ('' === $vars_chunk) {
+				$i++;
+				continue;
+			}
+			$new_line = '';
+			if ($i > 0) {
+				$new_line = "\r\n/* Typography vars for {$device} */\r\n";
+			}
+			$root_block = ":root {\r\n\t" . $vars_chunk . "\r\n}";
+			$css_code  .= $new_line . sprintf($this->media_queries[$device], $root_block) . "\r\n";
+			$i++;
+		}
+
+		$i = 0;
 		foreach ($this->css as $device => $code) {
 			$new_line = '';
 			if ($i > 0) {

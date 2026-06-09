@@ -33,6 +33,12 @@ var CustomifyAutoCSS = window.CustomifyAutoCSS || null;
     tablet: '',
     mobile: ''
   };
+  CustomifyAutoCSS.prototype.css_root = {
+    all: '',
+    desktop: '',
+    tablet: '',
+    mobile: ''
+  };
   CustomifyAutoCSS.prototype.box_shadow_fields = {
     color: null,
     x: 0,
@@ -51,6 +57,94 @@ var CustomifyAutoCSS = window.CustomifyAutoCSS || null;
       tablet: '',
       mobile: ''
     };
+    this.css_root = {
+      all: '',
+      desktop: '',
+      tablet: '',
+      mobile: ''
+    };
+  };
+
+  // Foundational typography settings that emit :root tokens — single
+  // source of truth for typography_field_uses_vars() (route gate) and
+  // typography_var_name() (token name). Keep in lockstep with PHP
+  // Customify_Customizer_Auto_CSS::TYPO_VAR_MAP.
+  var TYPO_VAR_MAP = {
+    'global_typography_base_p': 'body',
+    'global_typography_base_heading': 'heading',
+    'global_typography_heading_h1': 'h1',
+    'global_typography_heading_h2': 'h2',
+    'global_typography_heading_h3': 'h3',
+    'global_typography_heading_h4': 'h4',
+    'global_typography_heading_h5': 'h5',
+    'global_typography_heading_h6': 'h6'
+  };
+
+  /**
+   * Mirror of PHP typography_field_uses_vars(). Tokens are restricted
+   * to the foundational typography (TYPO_VAR_MAP) — Base body, shared
+   * Heading family/weight, h1–h6 type scale. Component-leaf roles
+   * (site title, tagline, widget title) and per-component typography
+   * stay in legacy selector-scoped (literal) mode.
+   */
+  CustomifyAutoCSS.prototype.typography_field_uses_vars = function (field) {
+    var name = field && field.name ? String(field.name) : '';
+    return !!TYPO_VAR_MAP[name];
+  };
+
+  /**
+   * Mirror of PHP typography_var_name(). Keep the strip rule in
+   * lockstep with class-customizer-auto-css.php typography_var_name().
+   */
+  CustomifyAutoCSS.prototype.typography_var_name = function (setting_name, property) {
+    var name = String(setting_name || '');
+    // Foundational settings map to explicit semantic names via the
+    // shared TYPO_VAR_MAP (lockstep with PHP).
+    if (TYPO_VAR_MAP[name]) {
+      return '--customify-typo-' + TYPO_VAR_MAP[name] + '-' + property;
+    }
+    // Fallback for opted-in non-foundational fields.
+    var gp = 'global_typography_';
+    if (name.length > gp.length && name.indexOf(gp) === 0) {
+      name = name.substr(gp.length);
+    }
+    var suffixes = ['_modal_font_size', '_typography', '_font_size', '_typo'];
+    for (var i = 0; i < suffixes.length; i++) {
+      var s = suffixes[i];
+      if (name.length > s.length && name.substr(-s.length) === s) {
+        name = name.substr(0, name.length - s.length);
+        break;
+      }
+    }
+    name = name.replace(/_/g, '-');
+    return '--customify-typo-' + name + '-' + property;
+  };
+
+  /**
+   * Convert a map of "property: value;" CSS lines into custom-property
+   * lines scoped to the given typography setting. Mirrors the PHP
+   * code_to_root_vars() helper.
+   */
+  CustomifyAutoCSS.prototype.code_to_root_vars = function (setting_name, code_map) {
+    var vars = [];
+    var that = this;
+    _.each(code_map, function (css_line) {
+      if (!_.isString(css_line)) {
+        return;
+      }
+      var line = css_line.replace(/^\s+|\s+$/g, '');
+      if (line === '') {
+        return;
+      }
+      var m = line.match(/^([a-z-]+)\s*:\s*(.+?);?\s*$/i);
+      if (!m) {
+        return;
+      }
+      var property = m[1].toLowerCase();
+      var value = m[2].replace(/^\s+|\s+$/g, '');
+      vars.push(that.typography_var_name(setting_name, property) + ': ' + value + ';');
+    });
+    return vars;
   };
   CustomifyAutoCSS.prototype.encodeValue = function (value) {
     return encodeURI(JSON.stringify(value));
@@ -153,6 +247,26 @@ var CustomifyAutoCSS = window.CustomifyAutoCSS || null;
     var that = this;
     that.loop_fields(Customify_Preview_Config.fields);
     var css_code = '';
+
+    // Flush :root typography variable buckets first. Each device's
+    // accumulated `--var: value;` lines get wrapped in a single
+    // :root { ... } block, then wrapped in the matching media
+    // query template — multiple typography fields collapse into
+    // one rule per device.
+    var ri = 0;
+    _.each(that.css_root, function (vars_chunk, device) {
+      if (vars_chunk === '') {
+        ri++;
+        return;
+      }
+      var new_line = '';
+      if (ri > 0) {
+        new_line = "\r\n\r\n";
+      }
+      var root_block = ":root {\r\n\t" + vars_chunk + "\r\n}";
+      css_code += new_line + that.media_queries[device].replace(/%s/g, root_block) + "\r\n";
+      ri++;
+    });
     var i = 0;
     _.each(that.css, function (code, device) {
       var new_line = '';
@@ -324,6 +438,23 @@ var CustomifyAutoCSS = window.CustomifyAutoCSS || null;
     return false;
   };
   CustomifyAutoCSS.prototype.setup_slider = function (value, format) {
+    // Mirror PHP setup_slider(): slider fields declare their `default`
+    // as a bare scalar (e.g. narrow_width => 800) which is what the
+    // live-preview reads via `api.get()` until the user actually drags
+    // the slider. Without this cast, `_.isObject( 800 )` is false →
+    // `value = {}` → `value.value` is null → empty string returned →
+    // the `css_format` rule never renders. Visible symptom on
+    // narrow_width: dragging the slider does nothing on a fresh page
+    // because the rule was missing in the first place; the per-field
+    // baseline gets restored only after the first save flips the
+    // option to `{value, unit}` shape. Cast the scalar here so first-
+    // paint preview matches a saved-state preview.
+    if ((typeof value === 'number' || typeof value === 'string') && value !== '') {
+      value = {
+        value: value,
+        unit: 'px'
+      };
+    }
     if (!_.isObject(value)) {
       value = {};
     }
@@ -1129,6 +1260,16 @@ var CustomifyAutoCSS = window.CustomifyAutoCSS || null;
     _.each(Customify_Preview_Config.typo_fields, function (f) {
       fields[f.name] = f;
     });
+
+    // Honor per-field `fields` overrides — keep in lockstep with
+    // PHP typography() so vars/legacy emit match.
+    if (field && _.isObject(field.fields)) {
+      _.each(field.fields, function (enabled, key) {
+        if (enabled === false) {
+          delete fields[key];
+        }
+      });
+    }
     if (!_.isUndefined(fields.font)) {
       code.font = this.setup_font({
         font: values.font,
@@ -1229,10 +1370,58 @@ var CustomifyAutoCSS = window.CustomifyAutoCSS || null;
         }
       }
     }
+
+    // Only foundational typography (Base body, shared Heading,
+    // h1–h6 scale) emits :root tokens. Component-leaf global
+    // typography (site title, tagline, widget title) and
+    // per-component typography fall through to selector-scoped
+    // literal output here.
+    if (!that.typography_field_uses_vars(field)) {
+      _.each(devices_css, function (els, device) {
+        that.css[device] += " " + field['selector'] + " {\r\n\t" + that.join(els, "\r\n\t") + "\r\n}";
+      });
+      that.css['all'] += " " + field['selector'] + " {\r\n\t" + that.join(code, "\r\n\t") + "\r\n}";
+      return;
+    }
+
+    // Vars mode: split per-property. Core props (family/weight/
+    // size/line-height) → :root vars. Cosmetic props (letter-spacing,
+    // text-decoration, text-transform, font-style) → selector-scoped
+    // literal CSS (no token). Keep in lockstep with PHP typography().
+    // Only font_size / line_height are device-scoped (both core), so
+    // every devices_css entry goes straight to :root vars.
     _.each(devices_css, function (els, device) {
-      that.css[device] += " " + field['selector'] + " {\r\n\t" + that.join(els, "\r\n\t") + "\r\n}";
+      var vars = that.code_to_root_vars(field.name, els);
+      if (vars.length) {
+        if (that.css_root[device] !== '') {
+          that.css_root[device] += "\r\n\t";
+        }
+        that.css_root[device] += vars.join("\r\n\t");
+      }
     });
-    that.css['all'] += " " + field['selector'] + " {\r\n\t" + that.join(code, "\r\n\t") + "\r\n}";
+    var cosmeticKeys = ['style', 'text_decoration', 'text_transform', 'letter_spacing'];
+    var cosmetic = {};
+    var core = {};
+    _.each(code, function (line, key) {
+      if (!line) {
+        return;
+      } // mirror PHP array_filter($code) — drop empty lines
+      if (_.contains(cosmeticKeys, key)) {
+        cosmetic[key] = line;
+      } else {
+        core[key] = line;
+      }
+    });
+    if (!_.isEmpty(cosmetic)) {
+      that.css['all'] += " " + field['selector'] + " {\r\n\t" + that.join(cosmetic, "\r\n\t") + "\r\n}";
+    }
+    var allVars = that.code_to_root_vars(field.name, core);
+    if (allVars.length) {
+      if (that.css_root['all'] !== '') {
+        that.css_root['all'] += "\r\n\t";
+      }
+      that.css_root['all'] += allVars.join("\r\n\t");
+    }
   };
   var CustomifyAutoCSSInit = new CustomifyAutoCSS();
   api.bind('preview-ready', function () {

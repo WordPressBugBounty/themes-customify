@@ -4218,6 +4218,214 @@ function Settings({
     })]
   });
 }
+;// ./src/backend/admin/dashboard-v2/tabs/StarterTemplates.jsx
+/**
+ * Starter Templates tab.
+ *
+ * Three modes, picked from the boot payload:
+ *
+ *   - Default (`boot.useStarterTemplates` falsy) → render a "Coming soon"
+ *     placeholder with a disabled button. This is the public-facing
+ *     state while the activation flow isn't ready to ship. Gate is
+ *     flipped on by `define( 'CUSTOMIFY_USE_STARTER_TEMPLATES', true )`
+ *     in wp-config.php or the `customify_use_starter_templates` filter
+ *     (see inc/admin/dashboard-v2.php).
+ *
+ *   - `boot.importer.active` set by the FameThemes Demo Importer plugin's
+ *     Customify adapter (hooks `customify_dashboard_localize`) →
+ *     embed the plugin's React app into this tab. The plugin enqueues
+ *     its bundle on `toplevel_page_customify`, exposes
+ *     `window.ftDemoImporter.mount(el)` / `unmount(el)`, and skips its
+ *     own auto-mount (because `embedded: true`).
+ *
+ *   - Otherwise → render the CTA that one-click installs + activates the
+ *     FameThemes Demo Importer plugin via WP's /wp/v2/plugins REST
+ *     endpoint, then reloads so the tab flips into the embedded mode
+ *     above.
+ */
+
+
+
+
+
+
+
+// REST identifier WP uses for a plugin = `{folder}/{file-without-ext}`.
+// FameThemes Demo Importer's main file matches its slug.
+
+const PLUGIN_SLUG = 'famethemes-demo-importer';
+const PLUGIN_ID = `${PLUGIN_SLUG}/${PLUGIN_SLUG}`;
+function StarterTemplates() {
+  const boot = useBoot();
+  const slotRef = (0,external_wp_element_namespaceObject.useRef)(null);
+  const useStarterTemplates = !!boot?.useStarterTemplates;
+  const importerActive = !!boot?.importer?.active;
+  (0,external_wp_element_namespaceObject.useEffect)(() => {
+    if (!useStarterTemplates || !importerActive) {
+      return undefined;
+    }
+    const el = slotRef.current;
+    const api = typeof window !== 'undefined' ? window.ftDemoImporter : null;
+    if (!el || !api?.mount) {
+      return undefined;
+    }
+    api.mount(el);
+    return () => {
+      api.unmount?.(el);
+    };
+  }, [useStarterTemplates, importerActive]);
+  if (!useStarterTemplates) {
+    return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(ComingSoon, {});
+  }
+  if (importerActive) {
+    return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
+      className: "customify-dashboard-starter-templates is-embedded",
+      children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
+        ref: slotRef,
+        id: "ft-demo-importer-app",
+        className: "customify-dashboard-starter-templates__slot"
+      })
+    });
+  }
+  return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(InstallCta, {
+    boot: boot
+  });
+}
+
+/**
+ * Public-facing placeholder while the activation flow isn't shipping
+ * yet. Mirrors the hero shell of InstallCta so the tab keeps the same
+ * visual rhythm — only the CTA copy changes and the button is disabled.
+ */
+function ComingSoon() {
+  return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
+    className: "customify-dashboard-starter-templates",
+    children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("section", {
+      className: "pmdk-hero",
+      children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)("div", {
+        className: "pmdk-hero__content",
+        children: [/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("h2", {
+          className: "pmdk-hero__title",
+          children: (0,external_wp_i18n_namespaceObject.__)('Starter Templates', 'customify')
+        }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("p", {
+          className: "pmdk-hero__tagline",
+          children: (0,external_wp_i18n_namespaceObject.__)('Create and customize professionally designed websites in minutes. Simply choose your template, choose your colors, and import. Done!', 'customify')
+        }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Button, {
+          variant: "primary",
+          className: "pmdk-hero__cta",
+          disabled: true,
+          "aria-disabled": "true",
+          children: (0,external_wp_i18n_namespaceObject.__)('Coming soon', 'customify')
+        })]
+      })
+    })
+  });
+}
+
+/**
+ * CTA card — drives the install / activate flow against
+ * `/wp/v2/plugins`. Lifecycle:
+ *
+ *   idle → busy (GET status)
+ *     ├── 404 / not_installed → POST /wp/v2/plugins {slug, status:active}
+ *     ├── exists & status=inactive → POST /wp/v2/plugins/{id} {status:active}
+ *     └── exists & status=active → already-active short-circuit
+ *   → on success: window.location.reload()
+ *   → on failure: surface message + offer the legacy WP install screen
+ *                 link as a manual fallback.
+ *
+ * Reload (vs. flipping the local state) is deliberate: the importer
+ * plugin only adds `boot.importer.active` once its adapter has loaded,
+ * which requires a fresh PHP request — there's no way to opt the tab
+ * into embedded mode in-place.
+ */
+function InstallCta({
+  boot
+}) {
+  const [busy, setBusy] = (0,external_wp_element_namespaceObject.useState)(false);
+  const [error, setError] = (0,external_wp_element_namespaceObject.useState)(null);
+  const fallbackUrl = boot?.urls?.starterTemplatesInstall || 'plugin-install.php?tab=search&s=famethemes+demo+importer';
+  const handleClick = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      // 1. Probe current install state. apiFetch throws on 4xx;
+      // a 404 means "not installed" and is a normal branch, not
+      // an error.
+      let current = null;
+      try {
+        current = await external_wp_apiFetch_default()({
+          path: `/wp/v2/plugins/${PLUGIN_ID}`
+        });
+      } catch (e) {
+        if (e?.data?.status !== 404 && e?.code !== 'rest_plugin_not_found') {
+          throw e;
+        }
+      }
+      if (!current) {
+        // 2a. Not installed → install (POST /wp/v2/plugins
+        // pulls the slug from wp.org). Passing `status:
+        // active` makes WP activate as part of the same
+        // request.
+        await external_wp_apiFetch_default()({
+          path: '/wp/v2/plugins',
+          method: 'POST',
+          data: {
+            slug: PLUGIN_SLUG,
+            status: 'active'
+          }
+        });
+      } else if (current.status !== 'active') {
+        // 2b. Installed but not active → activate.
+        await external_wp_apiFetch_default()({
+          path: `/wp/v2/plugins/${PLUGIN_ID}`,
+          method: 'POST',
+          data: {
+            status: 'active'
+          }
+        });
+      }
+      // 2c. Already active → fall through to reload.
+
+      window.location.reload();
+    } catch (e) {
+      const msg = e?.message || (0,external_wp_i18n_namespaceObject.__)('Could not install or activate the plugin.', 'customify');
+      setError(msg);
+      setBusy(false);
+    }
+  };
+  return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
+    className: "customify-dashboard-starter-templates",
+    children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("section", {
+      className: "pmdk-hero",
+      children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)("div", {
+        className: "pmdk-hero__content",
+        children: [/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("h2", {
+          className: "pmdk-hero__title",
+          children: (0,external_wp_i18n_namespaceObject.__)('Starter Templates', 'customify')
+        }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("p", {
+          className: "pmdk-hero__tagline",
+          children: (0,external_wp_i18n_namespaceObject.__)('Create and customize professionally designed websites in minutes. Simply choose your template, choose your colors, and import. Done!', 'customify')
+        }), error && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_wp_components_namespaceObject.Notice, {
+          status: "error",
+          isDismissible: false,
+          className: "customify-dashboard-starter-templates__notice",
+          children: [error, ' ', /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("a", {
+            href: fallbackUrl,
+            children: (0,external_wp_i18n_namespaceObject.__)('Install manually instead.', 'customify')
+          })]
+        }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_wp_components_namespaceObject.Button, {
+          variant: "primary",
+          className: "pmdk-hero__cta",
+          onClick: handleClick,
+          disabled: busy,
+          isBusy: busy,
+          children: [busy && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Spinner, {}), busy ? (0,external_wp_i18n_namespaceObject.__)('Activating Starter Templates…', 'customify') : (0,external_wp_i18n_namespaceObject.__)('Activate Customify Starter Templates', 'customify')]
+        })]
+      })
+    })
+  });
+}
 ;// ./node_modules/@pressmaximum/dashboard-kit/src/changelog/CategoryBadge.css
 // extracted by mini-css-extract-plugin
 
@@ -4565,6 +4773,7 @@ const brandIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24
 
 
 
+
 function mount() {
   if (!document.getElementById('customify-dashboard')) {
     return;
@@ -4575,6 +4784,7 @@ function mount() {
   // "Pro version" suffix. Falls back to the theme's own version label
   // for the Free path.
   const proActive = !!boot.proActive;
+  const useStarterTemplates = !!boot.useStarterTemplates;
   const proVersion = (boot.proVersion || '') + '';
   const themeVersion = (boot.themeVersion || '') + '';
   let versionLabel;
@@ -4643,7 +4853,10 @@ function mount() {
     }, {
       id: 'settings',
       label: (0,external_wp_i18n_namespaceObject.__)('Settings', 'customify')
-    }, ...(proActive ? [] : [{
+    }, ...(useStarterTemplates ? [{
+      id: 'starter-templates',
+      label: (0,external_wp_i18n_namespaceObject.__)('Starter Templates', 'customify')
+    }] : []), ...(proActive ? [] : [{
       id: 'free-vs-pro',
       label: (0,external_wp_i18n_namespaceObject.__)('Free vs Pro', 'customify')
     }]), {
@@ -4663,6 +4876,12 @@ function mount() {
         component: Settings,
         type: 'page'
       },
+      ...(useStarterTemplates ? {
+        '#starter-templates': {
+          component: StarterTemplates,
+          type: 'page'
+        }
+      } : {}),
       ...(proActive ? {} : {
         '#free-vs-pro': {
           component: FreeVsPro,
