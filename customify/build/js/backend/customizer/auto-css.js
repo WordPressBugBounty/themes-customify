@@ -465,6 +465,14 @@ var CustomifyAutoCSS = window.CustomifyAutoCSS || null;
     if (!value.unit) {
       value.unit = 'px';
     }
+
+    // Unitless sentinel: multi-unit sliders store '-' when the user
+    // picks the unitless option (line-height multiplier). Emit the
+    // bare number. Keep the empty-unit→px coercion above first so
+    // legacy values keep resolving to px. Mirrors PHP setup_slider().
+    if (value.unit === '-') {
+      value.unit = '';
+    }
     var c = '';
     var v = '';
     if (format) {
