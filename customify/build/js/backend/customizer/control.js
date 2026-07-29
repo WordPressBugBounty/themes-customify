@@ -9,7 +9,7 @@ var external_wp_i18n_namespaceObject = window["wp"]["i18n"];
 var external_wp_primitives_namespaceObject = window["wp"]["primitives"];
 ;// external "ReactJSXRuntime"
 var external_ReactJSXRuntime_namespaceObject = window["ReactJSXRuntime"];
-;// ./node_modules/@wordpress/icons/build-module/library/arrow-right.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/arrow-right.mjs
 // packages/icons/src/library/arrow-right.tsx
 
 
@@ -17,7 +17,7 @@ var arrow_right_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceO
 
 //# sourceMappingURL=arrow-right.mjs.map
 
-;// ./node_modules/@wordpress/icons/build-module/library/arrow-down.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/arrow-down.mjs
 // packages/icons/src/library/arrow-down.tsx
 
 
@@ -25,7 +25,7 @@ var arrow_down_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceOb
 
 //# sourceMappingURL=arrow-down.mjs.map
 
-;// ./node_modules/@wordpress/icons/build-module/library/justify-left.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/justify-left.mjs
 // packages/icons/src/library/justify-left.tsx
 
 
@@ -33,7 +33,7 @@ var justify_left_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespace
 
 //# sourceMappingURL=justify-left.mjs.map
 
-;// ./node_modules/@wordpress/icons/build-module/library/justify-center.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/justify-center.mjs
 // packages/icons/src/library/justify-center.tsx
 
 
@@ -41,7 +41,7 @@ var justify_center_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespa
 
 //# sourceMappingURL=justify-center.mjs.map
 
-;// ./node_modules/@wordpress/icons/build-module/library/justify-right.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/justify-right.mjs
 // packages/icons/src/library/justify-right.tsx
 
 
@@ -49,7 +49,7 @@ var justify_right_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespac
 
 //# sourceMappingURL=justify-right.mjs.map
 
-;// ./node_modules/@wordpress/icons/build-module/library/justify-space-between.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/justify-space-between.mjs
 // packages/icons/src/library/justify-space-between.tsx
 
 
@@ -57,7 +57,7 @@ var justify_space_between_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_
 
 //# sourceMappingURL=justify-space-between.mjs.map
 
-;// ./node_modules/@wordpress/icons/build-module/icon/index.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/icon/index.mjs
 // packages/icons/src/icon/index.ts
 
 var icon_default = (0,external_wp_element_namespaceObject.forwardRef)(
@@ -73,7 +73,7 @@ var icon_default = (0,external_wp_element_namespaceObject.forwardRef)(
 
 //# sourceMappingURL=index.mjs.map
 
-;// ./node_modules/@wordpress/icons/build-module/library/chevron-down.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/chevron-down.mjs
 // packages/icons/src/library/chevron-down.tsx
 
 

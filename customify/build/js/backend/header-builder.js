@@ -2,7 +2,7 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 962:
+/***/ 778:
 /***/ (function(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
 
 
@@ -16,7 +16,7 @@ var external_wp_i18n_namespaceObject = window["wp"]["i18n"];
 var external_wp_primitives_namespaceObject = window["wp"]["primitives"];
 ;// external "ReactJSXRuntime"
 var external_ReactJSXRuntime_namespaceObject = window["ReactJSXRuntime"];
-;// ./node_modules/@wordpress/icons/build-module/library/settings.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/settings.mjs
 // packages/icons/src/library/settings.tsx
 
 
@@ -27,7 +27,7 @@ var settings_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObje
 
 //# sourceMappingURL=settings.mjs.map
 
-;// ./node_modules/@wordpress/icons/build-module/library/close.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/close.mjs
 // packages/icons/src/library/close.tsx
 
 
@@ -35,7 +35,7 @@ var close_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.
 
 //# sourceMappingURL=close.mjs.map
 
-;// ./node_modules/@wordpress/icons/build-module/library/drag-handle.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/drag-handle.mjs
 // packages/icons/src/library/drag-handle.tsx
 
 
@@ -43,7 +43,7 @@ var drag_handle_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceO
 
 //# sourceMappingURL=drag-handle.mjs.map
 
-;// ./node_modules/@wordpress/icons/build-module/library/plus.mjs
+;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/plus.mjs
 // packages/icons/src/library/plus.tsx
 
 
@@ -56,7 +56,7 @@ var external_React_namespaceObject = window["React"];
 var external_React_default = /*#__PURE__*/__webpack_require__.n(external_React_namespaceObject);
 ;// external "ReactDOM"
 var external_ReactDOM_namespaceObject = window["ReactDOM"];
-;// ./node_modules/@dnd-kit/utilities/dist/utilities.esm.js
+;// ./node_modules/.pnpm/@dnd-kit+utilities@3.2.2_react@18.3.1/node_modules/@dnd-kit/utilities/dist/utilities.esm.js
 
 
 function useCombinedRefs() {
@@ -391,7 +391,7 @@ function findFirstFocusableNode(element) {
 
 //# sourceMappingURL=utilities.esm.js.map
 
-;// ./node_modules/@dnd-kit/accessibility/dist/accessibility.esm.js
+;// ./node_modules/.pnpm/@dnd-kit+accessibility@3.1.1_react@18.3.1/node_modules/@dnd-kit/accessibility/dist/accessibility.esm.js
 
 
 const hiddenStyles = {
@@ -454,7 +454,7 @@ function useAnnouncement() {
 
 //# sourceMappingURL=accessibility.esm.js.map
 
-;// ./node_modules/@dnd-kit/core/dist/core.esm.js
+;// ./node_modules/.pnpm/@dnd-kit+core@6.3.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@dnd-kit/core/dist/core.esm.js
 /* unused harmony import specifier */ var useState;
 /* unused harmony import specifier */ var React;
 /* unused harmony import specifier */ var cloneElement;
@@ -4080,12 +4080,12 @@ function AnimationManager(_ref) {
   }) : null);
 }
 
-const defaultTransform = {
+const defaultTransform = (/* unused pure expression or super */ null && ({
   x: 0,
   y: 0,
   scaleX: 1,
   scaleY: 1
-};
+}));
 function NullifiedContextProvider(_ref) {
   let {
     children
@@ -4097,10 +4097,10 @@ function NullifiedContextProvider(_ref) {
   }, children));
 }
 
-const baseStyles = {
+const baseStyles = (/* unused pure expression or super */ null && ({
   position: 'fixed',
   touchAction: 'none'
-};
+}));
 
 const defaultTransition = activatorEvent => {
   const isKeyboardActivator = core_esm_isKeyboardEvent(activatorEvent);
@@ -4204,13 +4204,13 @@ const defaultKeyframeResolver = _ref2 => {
     }
   } = _ref2;
   return [{
-    transform: CSS.Transform.toString(initial)
+    transform: core_esm_CSS.Transform.toString(initial)
   }, {
-    transform: CSS.Transform.toString(final)
+    transform: core_esm_CSS.Transform.toString(final)
   }];
 };
 
-const defaultDropAnimationConfiguration = {
+const defaultDropAnimationConfiguration = (/* unused pure expression or super */ null && ({
   duration: 250,
   easing: 'ease',
   keyframes: defaultKeyframeResolver,
@@ -4221,7 +4221,7 @@ const defaultDropAnimationConfiguration = {
       }
     }
   })
-};
+}));
 function useDropAnimation(_ref3) {
   let {
     config,
@@ -4438,7 +4438,7 @@ const DragOverlay = /*#__PURE__*/(/* unused pure expression or super */ null && 
 
 //# sourceMappingURL=core.esm.js.map
 
-;// ./node_modules/@dnd-kit/sortable/dist/sortable.esm.js
+;// ./node_modules/.pnpm/@dnd-kit+sortable@10.0.0_@dnd-kit+core@6.3.1_react-dom@18.3.1_react@18.3.1__react@18.3.1__react@18.3.1/node_modules/@dnd-kit/sortable/dist/sortable.esm.js
 
 
 
@@ -4508,10 +4508,10 @@ function normalizeDisabled(disabled) {
 }
 
 // To-do: We should be calculating scale transformation
-const defaultScale = {
+const defaultScale = (/* unused pure expression or super */ null && ({
   scaleX: 1,
   scaleY: 1
-};
+}));
 const horizontalListSortingStrategy = _ref => {
   var _rects$activeIndex;
 
@@ -7069,7 +7069,7 @@ wp.customize.bind('ready', () => {
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [733], function() { return __webpack_require__(962); })
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [733], function() { return __webpack_require__(778); })
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()
