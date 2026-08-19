@@ -27,8 +27,8 @@ var external_ReactJSXRuntime_namespaceObject = window["ReactJSXRuntime"];
  * Customify Page Settings — block editor plugin.
  *
  * Renders a PluginDocumentSettingPanel with a flat stack of controls in the
- * Document sidebar. Sections (Layout, Disable Elements, Page Header) are
- * introduced by uppercase section labels rather than tabs.
+ * Document sidebar. Related toggle controls are introduced by a field-style
+ * label rather than a separate tab.
  */
 
 
@@ -313,6 +313,16 @@ const PAGE_HEADER_OPTIONS = [{
   label: (0,external_wp_i18n_namespaceObject.__)('Hide', 'customify'),
   value: 'none'
 }];
+const TRANSPARENT_HEADER_OPTIONS = [{
+  label: (0,external_wp_i18n_namespaceObject.__)('Default', 'customify'),
+  value: 'default'
+}, {
+  label: (0,external_wp_i18n_namespaceObject.__)('Enable', 'customify'),
+  value: 'show'
+}, {
+  label: (0,external_wp_i18n_namespaceObject.__)('Disable', 'customify'),
+  value: 'hide'
+}];
 const BREADCRUMB_OPTIONS = [{
   label: (0,external_wp_i18n_namespaceObject.__)('Inherit from Customizer', 'customify'),
   value: 'default'
@@ -423,11 +433,13 @@ function CustomifyPageSettings() {
       metaKey: "disable_footer_bottom",
       meta: meta,
       setMeta: setMeta
-    }), config.hasBreadcrumb && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_ReactJSXRuntime_namespaceObject.Fragment, {
-      children: [/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("p", {
-        className: "customify-ps-section-label",
-        children: (0,external_wp_i18n_namespaceObject.__)('Page Header', 'customify')
-      }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.SelectControl, {
+    }), (config.hasHeaderTransparent || config.hasBreadcrumb) && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_ReactJSXRuntime_namespaceObject.Fragment, {
+      children: [config.hasHeaderTransparent && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.SelectControl, {
+        label: (0,external_wp_i18n_namespaceObject.__)('Transparent Header', 'customify'),
+        value: get('header_transparent_display') || 'default',
+        options: TRANSPARENT_HEADER_OPTIONS,
+        onChange: v => set('header_transparent_display', v)
+      }), config.hasBreadcrumb && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.SelectControl, {
         label: (0,external_wp_i18n_namespaceObject.__)('Breadcrumb', 'customify'),
         value: get('breadcrumb_display') || 'default',
         options: BREADCRUMB_OPTIONS,
