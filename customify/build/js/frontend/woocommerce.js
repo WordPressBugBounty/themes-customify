@@ -1,7 +1,7 @@
 /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 454:
+/***/ 325:
 /***/ (function() {
 
 /**
@@ -240,7 +240,7 @@
 
 /***/ }),
 
-/***/ 358:
+/***/ 201:
 /***/ (function() {
 
 jQuery(document).ready(function ($) {
@@ -491,9 +491,9 @@ jQuery(document).ready(function ($) {
 // This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 !function() {
 "use strict";
-/* harmony import */ var _js_compatibility_woocommerce_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(358);
+/* harmony import */ var _js_compatibility_woocommerce_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(201);
 /* harmony import */ var _js_compatibility_woocommerce_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_js_compatibility_woocommerce_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _js_compatibility_cart_drawer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(454);
+/* harmony import */ var _js_compatibility_cart_drawer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(325);
 /* harmony import */ var _js_compatibility_cart_drawer_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_js_compatibility_cart_drawer_js__WEBPACK_IMPORTED_MODULE_1__);
 
 

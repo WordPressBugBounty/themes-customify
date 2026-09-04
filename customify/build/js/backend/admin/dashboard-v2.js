@@ -41,7 +41,7 @@ var external_wp_element_namespaceObject = window["wp"]["element"];
 var external_wp_hooks_namespaceObject = window["wp"]["hooks"];
 ;// external "ReactJSXRuntime"
 var external_ReactJSXRuntime_namespaceObject = window["ReactJSXRuntime"];
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/HashRouter.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/HashRouter.jsx
 /**
  * Minimal hash router for the dashboard SPA.
  *
@@ -250,7 +250,7 @@ function useNavigate() {
   }, [guard]);
 }
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/useFocusOnRouteChange.js
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/useFocusOnRouteChange.js
 /**
  * useFocusOnRouteChange — SPA focus management.
  *
@@ -288,10 +288,10 @@ function useFocusOnRouteChange(route) {
   return ref;
 }
 /* harmony default export */ var core_useFocusOnRouteChange = ((/* unused pure expression or super */ null && (useFocusOnRouteChange)));
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/TabStrip.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/TabStrip.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/TabStrip.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/TabStrip.jsx
 /**
  * TabStrip — Tier-1 layout primitive (SPEC §5.13). Zero translatable
  * strings: every label and the `aria-label` arrive via props.
@@ -363,7 +363,7 @@ function TabStrip({
 var external_wp_components_namespaceObject = window["wp"]["components"];
 ;// external ["wp","primitives"]
 var external_wp_primitives_namespaceObject = window["wp"]["primitives"];
-;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/help.mjs
+;// ./node_modules/@wordpress/icons/build-module/library/help.mjs
 // packages/icons/src/library/help.tsx
 
 
@@ -371,7 +371,7 @@ var help_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.j
 
 //# sourceMappingURL=help.mjs.map
 
-;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/page.mjs
+;// ./node_modules/@wordpress/icons/build-module/library/page.mjs
 // packages/icons/src/library/page.tsx
 
 
@@ -382,7 +382,7 @@ var page_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.j
 
 //# sourceMappingURL=page.mjs.map
 
-;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/chevron-right.mjs
+;// ./node_modules/@wordpress/icons/build-module/library/chevron-right.mjs
 // packages/icons/src/library/chevron-right.tsx
 
 
@@ -390,7 +390,7 @@ var chevron_right_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespac
 
 //# sourceMappingURL=chevron-right.mjs.map
 
-;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/external.mjs
+;// ./node_modules/@wordpress/icons/build-module/library/external.mjs
 // packages/icons/src/library/external.tsx
 
 
@@ -398,7 +398,7 @@ var external_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObje
 
 //# sourceMappingURL=external.mjs.map
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/createI18nBag.js
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/createI18nBag.js
 /**
  * createI18nBag — merge a component's English defaults with consumer
  * overrides. Tier-2 components call this once in their render bodies so
@@ -434,10 +434,10 @@ function createI18nBag(defaults, overrides) {
   };
 }
 /* harmony default export */ var core_createI18nBag = ((/* unused pure expression or super */ null && (createI18nBag)));
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/HelpPanel.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/HelpPanel.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/HelpPanel.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/HelpPanel.jsx
 /**
  * HelpPanel — Tier-2 page component (SPEC §5.13). Compact help popover
  * anchored to a `?` button. Consumers pass `items` (resource links) and
@@ -554,7 +554,7 @@ function HelpPanel({
 }
 ;// external ["wp","data"]
 var external_wp_data_namespaceObject = window["wp"]["data"];
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/SnackbarSlot.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/SnackbarSlot.jsx
 /**
  * SnackbarSlot — bottom-centered transient notices slot bound to WP's
  * `core/notices` data store. Renders snackbar-typed notices in a fixed
@@ -597,10 +597,10 @@ function SnackbarSlot({
     onRemove: removeNotice
   });
 }
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/DashboardShell.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/DashboardShell.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/DashboardShell.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/DashboardShell.jsx
 /**
  * DashboardShell — Tier-1 layout primitive (SPEC §5.13). Composes the
  * header (brand + tabs + version + help slot) + a focus-managed main
@@ -766,7 +766,7 @@ function DashboardShell({
     }), snackbar !== undefined ? snackbar : /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(SnackbarSlot, {})]
   });
 }
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/BootDataLoader.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/BootDataLoader.jsx
 /**
  * BootDataLoader — read the consumer's PHP-localized boot payload off
  * `window[ bootGlobal ]` and ship it down the component tree via React
@@ -821,7 +821,7 @@ function useBoot() {
   return (0,external_wp_element_namespaceObject.useContext)(BootContext);
 }
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/createFilterNamespace.js
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/createFilterNamespace.js
 /**
  * Build the per-consumer filter channel-name map.
  *
@@ -863,7 +863,7 @@ function createFilterNamespace(prefix) {
   };
 }
 /* harmony default export */ var core_createFilterNamespace = ((/* unused pure expression or super */ null && (createFilterNamespace)));
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/settings/useDirtyState.js
+;// ./node_modules/@pressmaximum/dashboard-kit/src/settings/useDirtyState.js
 /* unused harmony import specifier */ var useState;
 /* unused harmony import specifier */ var useRef;
 /* unused harmony import specifier */ var useEffect;
@@ -1052,7 +1052,7 @@ function __resetDirtyRegistry() {
   DISCARD_MESSAGES.clear();
 }
 /* harmony default export */ var settings_useDirtyState = ((/* unused pure expression or super */ null && (useDirtyState)));
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/core/mountDashboard.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/core/mountDashboard.jsx
 /**
  * mountDashboard — bootstraps the dashboard SPA inside the consumer's
  * mount node. Called once per page load.
@@ -1179,10 +1179,10 @@ function mountDashboard(config) {
 /* harmony default export */ var core_mountDashboard = (mountDashboard);
 ;// external ["wp","i18n"]
 var external_wp_i18n_namespaceObject = window["wp"]["i18n"];
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/welcome/Hero.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/welcome/Hero.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/welcome/Hero.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/welcome/Hero.jsx
 /**
  * Hero — Welcome page greeting + tagline + primary CTA + optional
  * illustration. SPEC §5.5 + §5.13 Tier-2 page component.
@@ -1236,7 +1236,7 @@ function Hero({
     })]
   });
 }
-;// ./node_modules/.pnpm/@wordpress+icons@12.2.0_react@18.3.1/node_modules/@wordpress/icons/build-module/library/check.mjs
+;// ./node_modules/@wordpress/icons/build-module/library/check.mjs
 // packages/icons/src/library/check.tsx
 
 
@@ -1244,7 +1244,7 @@ var check_default = /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.
 
 //# sourceMappingURL=check.mjs.map
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/welcome/ChecklistItem.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/welcome/ChecklistItem.jsx
 /**
  * ChecklistItem — single row in the Welcome onboarding checklist.
  * SPEC §5.5 + §5.10b. Tier-2 page component.
@@ -1406,10 +1406,10 @@ function ChecklistItem({
     })]
   });
 }
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/welcome/Checklist.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/welcome/Checklist.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/welcome/Checklist.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/welcome/Checklist.jsx
 /**
  * Checklist — Welcome page onboarding-tasks list. SPEC §5.5.
  *
@@ -2109,10 +2109,10 @@ function Welcome() {
     })]
   });
 }
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/compare/CompareTable.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/compare/CompareTable.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/compare/CompareTable.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/compare/CompareTable.jsx
 /**
  * CompareTable — Free vs Pro matrix display component. SPEC §5.3b +
  * §5.13 Tier-2.
@@ -2527,7 +2527,7 @@ function FreeVsPro() {
     })]
   });
 }
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/settings/SchemaField.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/settings/SchemaField.jsx
 
 /**
  * SchemaField — Tier-1 layout primitive (SPEC §5.13). Dispatches on
@@ -2569,10 +2569,10 @@ function SchemaField({
     onChange: onChange
   });
 }
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/settings/SchemaForm.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/settings/SchemaForm.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/settings/SchemaForm.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/settings/SchemaForm.jsx
 /**
  * SchemaForm — Tier-1 layout primitive (SPEC §5.13). Renders ONE panel
  * — the consumer resolves "which panel is active" externally (route
@@ -2664,10 +2664,10 @@ function SchemaForm({
     }, field.id))
   });
 }
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/settings/SaveBar.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/settings/SaveBar.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/settings/SaveBar.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/settings/SaveBar.jsx
 /**
  * SaveBar — Tier-2 page component (SPEC §5.13). Left-aligned status text
  * mirrors the store lifecycle (saving / dirty / saved); right cluster is
@@ -2795,7 +2795,7 @@ function SaveBar({
     })
   });
 }
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/settings/fieldTypes.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/settings/fieldTypes.jsx
 /**
  * BASE_FIELD_TYPES — the kit's built-in field renderers for SchemaField
  * dispatch. SPEC §5.4 + §9.1 `{ns}.dashboard.settings.field-types` filter.
@@ -2929,10 +2929,10 @@ const BASE_FIELD_TYPES = {
   number: NumberField
 };
 /* harmony default export */ var fieldTypes = ((/* unused pure expression or super */ null && (BASE_FIELD_TYPES)));
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/layouts/SubNav/editor.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/layouts/SubNav/editor.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/layouts/SubNav/index.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/layouts/SubNav/index.jsx
 /**
  * SubNav — Tier-1 vertical nav rail (SPEC §5.3). Two consumer
  * patterns documented in the spec:
@@ -3019,7 +3019,7 @@ function SubNav({
 ;// external ["wp","apiFetch"]
 var external_wp_apiFetch_namespaceObject = window["wp"]["apiFetch"];
 var external_wp_apiFetch_default = /*#__PURE__*/__webpack_require__.n(external_wp_apiFetch_namespaceObject);
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/settings/createSettingsStore.js
+;// ./node_modules/@pressmaximum/dashboard-kit/src/settings/createSettingsStore.js
 /**
  * createSettingsStore — `@wordpress/data` store factory for schema-driven
  * settings forms. SPEC §5.4.
@@ -4231,15 +4231,15 @@ function Settings({
  *     in wp-config.php or the `customify_use_starter_templates` filter
  *     (see inc/admin/dashboard-v2.php).
  *
- *   - `boot.importer.active` set by the FameThemes Demo Importer plugin's
+ *   - `boot.importer.active` set by the Customify Starter Sites plugin's
  *     Customify adapter (hooks `customify_dashboard_localize`) →
  *     embed the plugin's React app into this tab. The plugin enqueues
  *     its bundle on `toplevel_page_customify`, exposes
- *     `window.ftDemoImporter.mount(el)` / `unmount(el)`, and skips its
- *     own auto-mount (because `embedded: true`).
+ *     `window.customifyStarterSites.mount(el)` / `unmount(el)`, and skips
+ *     its own auto-mount (because `embedded: true`).
  *
  *   - Otherwise → render the CTA that one-click installs + activates the
- *     FameThemes Demo Importer plugin via WP's /wp/v2/plugins REST
+ *     Customify Starter Sites plugin via WP's /wp/v2/plugins REST
  *     endpoint, then reloads so the tab flips into the embedded mode
  *     above.
  */
@@ -4251,9 +4251,9 @@ function Settings({
 
 
 // REST identifier WP uses for a plugin = `{folder}/{file-without-ext}`.
-// FameThemes Demo Importer's main file matches its slug.
+// Customify Starter Sites' main file matches its slug.
 
-const PLUGIN_SLUG = 'famethemes-demo-importer';
+const PLUGIN_SLUG = 'customify-starter-sites';
 const PLUGIN_ID = `${PLUGIN_SLUG}/${PLUGIN_SLUG}`;
 function StarterTemplates() {
   const boot = useBoot();
@@ -4265,7 +4265,7 @@ function StarterTemplates() {
       return undefined;
     }
     const el = slotRef.current;
-    const api = typeof window !== 'undefined' ? window.ftDemoImporter : null;
+    const api = typeof window !== 'undefined' ? window.customifyStarterSites : null;
     if (!el || !api?.mount) {
       return undefined;
     }
@@ -4282,7 +4282,7 @@ function StarterTemplates() {
       className: "customify-dashboard-starter-templates is-embedded",
       children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
         ref: slotRef,
-        id: "ft-demo-importer-app",
+        id: "customify-starter-sites-app",
         className: "customify-dashboard-starter-templates__slot"
       })
     });
@@ -4344,56 +4344,99 @@ function InstallCta({
 }) {
   const [busy, setBusy] = (0,external_wp_element_namespaceObject.useState)(false);
   const [error, setError] = (0,external_wp_element_namespaceObject.useState)(null);
-  const fallbackUrl = boot?.urls?.starterTemplatesInstall || 'plugin-install.php?tab=search&s=famethemes+demo+importer';
-  const handleClick = async () => {
+  // Install state of the plugin, discovered on mount:
+  //   'checking'      — probing /wp/v2/plugins (initial)
+  //   'not_installed' — needs installing from wordpress.org
+  //   'inactive'      — installed but not activated yet
+  const [pluginState, setPluginState] = (0,external_wp_element_namespaceObject.useState)('checking');
+  const fallbackUrl = boot?.urls?.starterTemplatesInstall || 'plugin-install.php?tab=search&s=customify+starter+sites';
+
+  // Probe whether the plugin is installed / active. A 404 (or
+  // rest_plugin_not_found) means it isn't installed — a normal branch,
+  // not an error. If it's already active the whole tab is in embedded
+  // mode and this CTA never renders, so we only distinguish
+  // not-installed vs inactive here.
+  const probeState = async () => {
+    try {
+      const current = await external_wp_apiFetch_default()({
+        path: `/wp/v2/plugins/${PLUGIN_ID}`
+      });
+      return current?.status === 'active' ? 'active' : 'inactive';
+    } catch (e) {
+      if (e?.data?.status === 404 || e?.code === 'rest_plugin_not_found') {
+        return 'not_installed';
+      }
+      throw e;
+    }
+  };
+  (0,external_wp_element_namespaceObject.useEffect)(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const state = await probeState();
+        if (!cancelled) {
+          // An 'active' result means the adapter should have
+          // flipped the tab into embedded mode already; treat it
+          // as inactive here so the Activate button still lets the
+          // user recover if the boot flag lagged.
+          setPluginState(state === 'active' ? 'inactive' : state);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setPluginState('not_installed');
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Step 1 — install the plugin from wordpress.org (without activating).
+  // On success, move to the 'inactive' state so the Activate button shows.
+  const handleInstall = async () => {
     setBusy(true);
     setError(null);
     try {
-      // 1. Probe current install state. apiFetch throws on 4xx;
-      // a 404 means "not installed" and is a normal branch, not
-      // an error.
-      let current = null;
-      try {
-        current = await external_wp_apiFetch_default()({
-          path: `/wp/v2/plugins/${PLUGIN_ID}`
-        });
-      } catch (e) {
-        if (e?.data?.status !== 404 && e?.code !== 'rest_plugin_not_found') {
-          throw e;
+      await external_wp_apiFetch_default()({
+        path: '/wp/v2/plugins',
+        method: 'POST',
+        // No `status: active` — install only; the user activates
+        // with a separate, explicit step below.
+        data: {
+          slug: PLUGIN_SLUG
         }
-      }
-      if (!current) {
-        // 2a. Not installed → install (POST /wp/v2/plugins
-        // pulls the slug from wp.org). Passing `status:
-        // active` makes WP activate as part of the same
-        // request.
-        await external_wp_apiFetch_default()({
-          path: '/wp/v2/plugins',
-          method: 'POST',
-          data: {
-            slug: PLUGIN_SLUG,
-            status: 'active'
-          }
-        });
-      } else if (current.status !== 'active') {
-        // 2b. Installed but not active → activate.
-        await external_wp_apiFetch_default()({
-          path: `/wp/v2/plugins/${PLUGIN_ID}`,
-          method: 'POST',
-          data: {
-            status: 'active'
-          }
-        });
-      }
-      // 2c. Already active → fall through to reload.
-
-      window.location.reload();
+      });
+      setPluginState('inactive');
     } catch (e) {
-      const msg = e?.message || (0,external_wp_i18n_namespaceObject.__)('Could not install or activate the plugin.', 'customify');
-      setError(msg);
+      setError(e?.message || (0,external_wp_i18n_namespaceObject.__)('Could not install the plugin.', 'customify'));
+    } finally {
       setBusy(false);
     }
   };
+
+  // Step 2 — activate the installed plugin, then reload so the tab
+  // re-renders in embedded mode (the plugin only sets
+  // boot.importer.active after a fresh PHP request).
+  const handleActivate = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      await external_wp_apiFetch_default()({
+        path: `/wp/v2/plugins/${PLUGIN_ID}`,
+        method: 'POST',
+        data: {
+          status: 'active'
+        }
+      });
+      window.location.reload();
+    } catch (e) {
+      setError(e?.message || (0,external_wp_i18n_namespaceObject.__)('Could not activate the plugin.', 'customify'));
+      setBusy(false);
+    }
+  };
+  const installing = busy && pluginState === 'not_installed';
+  const activating = busy && pluginState === 'inactive';
   return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
     className: "customify-dashboard-starter-templates",
     children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("section", {
@@ -4414,22 +4457,35 @@ function InstallCta({
             href: fallbackUrl,
             children: (0,external_wp_i18n_namespaceObject.__)('Install manually instead.', 'customify')
           })]
-        }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_wp_components_namespaceObject.Button, {
+        }), pluginState === 'checking' && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_wp_components_namespaceObject.Button, {
           variant: "primary",
           className: "pmdk-hero__cta",
-          onClick: handleClick,
+          disabled: true,
+          isBusy: true,
+          children: [/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Spinner, {}), (0,external_wp_i18n_namespaceObject.__)('Checking…', 'customify')]
+        }), pluginState === 'not_installed' && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_wp_components_namespaceObject.Button, {
+          variant: "primary",
+          className: "pmdk-hero__cta",
+          onClick: handleInstall,
           disabled: busy,
-          isBusy: busy,
-          children: [busy && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Spinner, {}), busy ? (0,external_wp_i18n_namespaceObject.__)('Activating Starter Templates…', 'customify') : (0,external_wp_i18n_namespaceObject.__)('Activate Customify Starter Templates', 'customify')]
+          isBusy: installing,
+          children: [installing && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Spinner, {}), installing ? (0,external_wp_i18n_namespaceObject.__)('Installing Starter Templates…', 'customify') : (0,external_wp_i18n_namespaceObject.__)('Activate Customify Starter Templates', 'customify')]
+        }), pluginState === 'inactive' && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)(external_wp_components_namespaceObject.Button, {
+          variant: "primary",
+          className: "pmdk-hero__cta",
+          onClick: handleActivate,
+          disabled: busy,
+          isBusy: activating,
+          children: [activating && /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Spinner, {}), activating ? (0,external_wp_i18n_namespaceObject.__)('Activating…', 'customify') : (0,external_wp_i18n_namespaceObject.__)('Activate plugin', 'customify')]
         })]
       })
     })
   });
 }
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/changelog/CategoryBadge.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/changelog/CategoryBadge.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/changelog/CategoryBadge.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/changelog/CategoryBadge.jsx
 /**
  * CategoryBadge — small uppercase pill rendered next to each changelog
  * item. SPEC §5.3b. Tier-2 page component.
@@ -4506,10 +4562,10 @@ function CategoryBadge({
     children: label
   });
 }
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/changelog/ReleaseBlock.css
+;// ./node_modules/@pressmaximum/dashboard-kit/src/changelog/ReleaseBlock.css
 // extracted by mini-css-extract-plugin
 
-;// ./node_modules/.pnpm/@pressmaximum+dashboard-kit@git+https+++github.com+PressMaximum+dashboard-kit.git+ce259_660e8ecd2705c3d8e48b0985f8efbe47/node_modules/@pressmaximum/dashboard-kit/src/changelog/ReleaseBlock.jsx
+;// ./node_modules/@pressmaximum/dashboard-kit/src/changelog/ReleaseBlock.jsx
 /**
  * ReleaseBlock — one release card. SPEC §5.3b + §5.10b. Tier-2 page
  * component.
