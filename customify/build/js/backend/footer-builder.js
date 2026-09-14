@@ -6426,16 +6426,31 @@ function BuilderRow({
   // Derive active columns and grid proportions from col_layout (always use desktop for builder view).
   let activeCols = COLS;
   let colsStyle = {};
+  let colSpans = [];
   if (colLayoutValue) {
     // count is global; fr is per-device (fall back to desktop).
     const count = Math.max(1, Math.min(5, colLayoutValue.count || colLayoutValue.desktop?.count || 3));
     const d = colLayoutValue.desktop || {};
-    const fr = Array.isArray(d.fr) && d.fr.length === count ? d.fr : Array(count).fill(1);
+    const rawFr = Array.isArray(d.fr) ? d.fr : [];
+    const mixedRows = count === 5 && ['2-3', '3-2', '2-2-1'].includes(d.layout) ? d.layout : '';
+    // Match the frontend renderer: one track means stacked; fewer tracks
+    // that divide the column count form repeated rows (for example, two
+    // tracks with four columns render as a 2×2 layout).
+    const isIntentional = rawFr.length === 1 || rawFr.length === count || rawFr.length > 1 && rawFr.length < count && count % rawFr.length === 0;
+    const fr = isIntentional ? rawFr : Array(count).fill(1);
     activeCols = ALL_COLS.slice(0, count);
-    colsStyle = {
-      display: 'grid',
-      gridTemplateColumns: fr.map(v => `${v}fr`).join(' ')
-    };
+    if (mixedRows) {
+      colsStyle = {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(6, minmax(0, 1fr))'
+      };
+      colSpans = mixedRows === '2-3' ? [3, 3, 2, 2, 2] : mixedRows === '3-2' ? [2, 2, 2, 2, 2] : [3, 3, 3, 3, 3];
+    } else {
+      colsStyle = {
+        display: 'grid',
+        gridTemplateColumns: fr.map(v => `${v}fr`).join(' ')
+      };
+    }
   }
   return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)("div", {
     ref: rowRef,
@@ -6462,8 +6477,11 @@ function BuilderRow({
     }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
       className: "customify-hb__cols",
       style: colsStyle,
-      children: activeCols.map(colId => /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(DropZone, {
+      children: activeCols.map((colId, index) => /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(DropZone, {
         colId: colId,
+        style: colSpans[index] ? {
+          gridColumn: `span ${colSpans[index]}`
+        } : undefined,
         rowId: rowId,
         device: device,
         items: cols[colId] || [],
@@ -6542,7 +6560,8 @@ function DropZone({
   allItems,
   onMove,
   onOpenSection,
-  onOpenPopover
+  onOpenPopover,
+  style
 }) {
   const location = {
     device,
@@ -6551,6 +6570,7 @@ function DropZone({
   };
   return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(DropZoneInner, {
     containerClass: `customify-hb__col customify-hb__col--${colId}`,
+    style: style,
     strategy: rectSortingStrategy,
     orientation: "horizontal",
     location: location,
@@ -6586,7 +6606,8 @@ function DropZoneInner({
   onMove,
   onOpenSection,
   onOpenPopover,
-  emptyHint
+  emptyHint,
+  style
 }) {
   const containerId = `col::${location.device}::${location.row}::${location.col}`;
   const itemIds = items.map(i => `placed::${i.id}`);
@@ -6645,6 +6666,7 @@ function DropZoneInner({
     strategy: strategy,
     children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)("div", {
       ref: setNodeRef,
+      style: style,
       className: `${containerClass}${isOver ? ' is-drag-over' : ''}`,
       onClick: e => {
         if (e.target.closest('.customify-hb__item')) return;
@@ -6879,54 +6901,127 @@ function ItemPickerPopover({
 /**
  * Column layout presets for footer rows.
  * fr: flex-fraction values for grid-template-columns.
+ * layout: optional mixed-row identifier for five-column grids.
+ * rowCols: visual row column counts used by the preset icon only.
  */
 const PRESETS = {
   1: [{
     fr: [1]
   }],
-  2: [{
+  2: [
+  // Balanced, moderate splits, strong splits, then stacked.
+  {
     fr: [1, 1]
+  }, {
+    fr: [2, 3]
+  }, {
+    fr: [3, 2]
   }, {
     fr: [1, 2]
   }, {
     fr: [2, 1]
   }, {
     fr: [1, 3]
-  }],
-  3: [{
-    fr: [1, 1, 1]
   }, {
-    fr: [1, 2, 1]
+    fr: [3, 1]
+  }, {
+    stacked: true
+  }],
+  3: [
+  // Balanced, mirrored edge emphasis, center/group emphasis, stacked.
+  {
+    fr: [1, 1, 1]
   }, {
     fr: [2, 1, 1]
   }, {
     fr: [1, 1, 2]
   }, {
-    fr: [1, 3, 1]
-  }, {
     fr: [3, 1, 1]
   }, {
     fr: [1, 1, 3]
   }, {
+    fr: [1, 2, 1]
+  }, {
+    fr: [1, 3, 1]
+  }, {
+    fr: [2, 2, 1]
+  }, {
+    fr: [1, 2, 2]
+  }, {
+    fr: [2, 1, 2]
+  }, {
     stacked: true
   }],
-  4: [{
+  4: [
+  // Balanced, single-column emphasis, symmetric emphasis, wrapped, stacked.
+  {
     fr: [1, 1, 1, 1]
   }, {
     fr: [2, 1, 1, 1]
   }, {
+    fr: [1, 1, 1, 2]
+  }, {
+    fr: [1, 2, 1, 1]
+  }, {
+    fr: [1, 1, 2, 1]
+  }, {
+    fr: [2, 2, 1, 1]
+  }, {
     fr: [1, 2, 2, 1]
+  }, {
+    fr: [1, 1, 2, 2]
+  }, {
+    fr: [2, 1, 1, 2]
   },
   // fr shorter than count → grid items wrap to a new row.
-  // fr=[1,1] with 4 items renders a 2×2 grid (50/50 on each row).
   {
     fr: [1, 1],
     rows: 2
   }, {
+    fr: [1, 2],
+    rows: 2
+  }, {
+    fr: [2, 1],
+    rows: 2
+  }, {
     stacked: true
   }],
-  5: [{
+  5: [
+  // Balanced, emphasis variants, mixed-row grids, then stacked.
+  {
     fr: [1, 1, 1, 1, 1]
+  }, {
+    fr: [2, 1, 1, 1, 1]
+  }, {
+    fr: [1, 1, 1, 1, 2]
+  }, {
+    fr: [1, 2, 1, 1, 1]
+  }, {
+    fr: [1, 1, 1, 2, 1]
+  }, {
+    fr: [1, 1, 2, 1, 1]
+  }, {
+    fr: [2, 2, 1, 1, 1]
+  }, {
+    fr: [1, 2, 2, 1, 1]
+  }, {
+    fr: [1, 1, 2, 2, 1]
+  }, {
+    fr: [1, 1, 1, 2, 2]
+  }, {
+    fr: [2, 1, 1, 1, 2]
+  }, {
+    fr: [1, 1],
+    layout: '2-3',
+    rowCols: [2, 3]
+  }, {
+    fr: [1, 1, 1],
+    layout: '3-2',
+    rowCols: [3, 3]
+  }, {
+    fr: [1, 1],
+    layout: '2-2-1',
+    rowCols: [2, 2, 2]
   }, {
     stacked: true
   }]
@@ -6992,7 +7087,8 @@ function LayoutSvg({
   fr,
   stacked,
   count,
-  rows
+  rows,
+  rowCols
 }) {
   const W = 48;
   const H = 30;
@@ -7010,6 +7106,36 @@ function LayoutSvg({
       height: Math.max(barH, 1),
       rx: 2
     }, i));
+    return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("svg", {
+      width: W,
+      height: H,
+      viewBox: `0 0 ${W} ${H}`,
+      fill: "currentColor",
+      xmlns: "http://www.w3.org/2000/svg",
+      children: rects
+    });
+  }
+  if (Array.isArray(rowCols) && rowCols.length) {
+    const validRows = rowCols.filter(columns => columns > 0);
+    const totalGY = GAP * (validRows.length - 1);
+    const rowH = (H - 4 - totalGY) / validRows.length;
+    const rects = [];
+    let itemIndex = 0;
+    validRows.forEach((columns, rowIndex) => {
+      const totalGX = GAP * (columns - 1);
+      const width = (W - totalGX) / columns;
+      const y = 2 + rowIndex * (rowH + GAP);
+      for (let columnIndex = 0; columnIndex < columns && itemIndex < count; columnIndex++) {
+        rects.push(/*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("rect", {
+          x: columnIndex * (width + GAP),
+          y: y,
+          width: Math.max(width, 1),
+          height: Math.max(rowH, 1),
+          rx: 2
+        }, itemIndex));
+        itemIndex++;
+      }
+    });
     return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("svg", {
       width: W,
       height: H,
@@ -7064,11 +7190,17 @@ function RowLayout_parseValue(raw) {
     const count = parseInt(parsed.count ?? parsed.desktop?.count ?? DEFAULT_VALUE.count, 10) || DEFAULT_VALUE.count;
     const globalGap = parsed.gap ?? 0;
     const globalPadding = parsed.padding ?? 0;
-    const parseDevice = (d, def) => ({
-      fr: (d?.fr || def.fr).map(v => parseInt(v, 10) || 1),
-      gap: parseInt(d?.gap ?? globalGap, 10) || 0,
-      padding: parseInt(d?.padding ?? globalPadding, 10) || 0
-    });
+    const parseDevice = (d, def) => {
+      const layout = count === 5 && ['2-3', '3-2', '2-2-1'].includes(d?.layout) ? d.layout : '';
+      return {
+        fr: (d?.fr || def.fr).map(v => parseInt(v, 10) || 1),
+        gap: parseInt(d?.gap ?? globalGap, 10) || 0,
+        padding: parseInt(d?.padding ?? globalPadding, 10) || 0,
+        ...(layout ? {
+          layout
+        } : {})
+      };
+    };
     return {
       count,
       desktop: parseDevice(parsed.desktop, DEFAULT_VALUE.desktop),
@@ -7136,6 +7268,7 @@ function RowLayout({
     fr: Array(count).fill(1)
   };
   const fr = deviceData.fr || Array(count).fill(1);
+  const layout = deviceData.layout || '';
   const presets = PRESETS[count] || [{
     fr: Array(count).fill(1)
   }];
@@ -7179,24 +7312,35 @@ function RowLayout({
         padding: 0
       };
       if (dev === 'mobile' && dev !== device) {
-        next[dev] = cur;
+        next[dev] = {
+          ...cur
+        };
+        if (n !== 5) delete next[dev].layout;
         return;
       }
-      next[dev] = {
+      const resized = {
         ...cur,
         fr: dev === device ? newFr : resizeFr(cur.fr, n)
       };
+      if (dev === device || n !== 5) delete resized.layout;
+      next[dev] = resized;
     });
     commit(next);
   };
   const handlePreset = preset => {
     const newFr = preset.stacked ? [1] : preset.fr;
+    const nextDevice = {
+      ...deviceData,
+      fr: newFr
+    };
+    if (preset.layout) {
+      nextDevice.layout = preset.layout;
+    } else {
+      delete nextDevice.layout;
+    }
     commit({
       ...value,
-      [device]: {
-        ...deviceData,
-        fr: newFr
-      }
+      [device]: nextDevice
     });
   };
   return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)("div", {
@@ -7230,8 +7374,8 @@ function RowLayout({
         className: "cb-row-layout__preset-grid",
         children: presets.map((preset, idx) => {
           const isStacked = !!preset.stacked;
-          const active = isStacked ? fr.length === 1 : JSON.stringify(fr) === JSON.stringify(preset.fr);
-          const title = isStacked ? 'stacked' : preset.rows ? `${preset.rows}×${preset.fr.length} (${preset.fr.join(':')})` : preset.fr.join(':');
+          const active = preset.layout ? layout === preset.layout : !layout && (isStacked ? fr.length === 1 : JSON.stringify(fr) === JSON.stringify(preset.fr));
+          const title = isStacked ? 'stacked' : preset.layout ? preset.layout.split('-').join(' + ') : preset.rows ? `${preset.rows}×${preset.fr.length} (${preset.fr.join(':')})` : preset.fr.join(':');
           return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("button", {
             type: "button",
             className: `cb-row-layout__preset-btn${active ? ' is-active' : ''}`,
@@ -7241,7 +7385,8 @@ function RowLayout({
               fr: preset.fr || [1],
               stacked: isStacked,
               count: count,
-              rows: preset.rows
+              rows: preset.rows,
+              rowCols: preset.rowCols
             })
           }, idx);
         })

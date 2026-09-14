@@ -6426,16 +6426,31 @@ function BuilderRow({
   // Derive active columns and grid proportions from col_layout (always use desktop for builder view).
   let activeCols = COLS;
   let colsStyle = {};
+  let colSpans = [];
   if (colLayoutValue) {
     // count is global; fr is per-device (fall back to desktop).
     const count = Math.max(1, Math.min(5, colLayoutValue.count || colLayoutValue.desktop?.count || 3));
     const d = colLayoutValue.desktop || {};
-    const fr = Array.isArray(d.fr) && d.fr.length === count ? d.fr : Array(count).fill(1);
+    const rawFr = Array.isArray(d.fr) ? d.fr : [];
+    const mixedRows = count === 5 && ['2-3', '3-2', '2-2-1'].includes(d.layout) ? d.layout : '';
+    // Match the frontend renderer: one track means stacked; fewer tracks
+    // that divide the column count form repeated rows (for example, two
+    // tracks with four columns render as a 2×2 layout).
+    const isIntentional = rawFr.length === 1 || rawFr.length === count || rawFr.length > 1 && rawFr.length < count && count % rawFr.length === 0;
+    const fr = isIntentional ? rawFr : Array(count).fill(1);
     activeCols = ALL_COLS.slice(0, count);
-    colsStyle = {
-      display: 'grid',
-      gridTemplateColumns: fr.map(v => `${v}fr`).join(' ')
-    };
+    if (mixedRows) {
+      colsStyle = {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(6, minmax(0, 1fr))'
+      };
+      colSpans = mixedRows === '2-3' ? [3, 3, 2, 2, 2] : mixedRows === '3-2' ? [2, 2, 2, 2, 2] : [3, 3, 3, 3, 3];
+    } else {
+      colsStyle = {
+        display: 'grid',
+        gridTemplateColumns: fr.map(v => `${v}fr`).join(' ')
+      };
+    }
   }
   return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)("div", {
     ref: rowRef,
@@ -6462,8 +6477,11 @@ function BuilderRow({
     }), /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
       className: "customify-hb__cols",
       style: colsStyle,
-      children: activeCols.map(colId => /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(DropZone, {
+      children: activeCols.map((colId, index) => /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(DropZone, {
         colId: colId,
+        style: colSpans[index] ? {
+          gridColumn: `span ${colSpans[index]}`
+        } : undefined,
         rowId: rowId,
         device: device,
         items: cols[colId] || [],
@@ -6542,7 +6560,8 @@ function DropZone({
   allItems,
   onMove,
   onOpenSection,
-  onOpenPopover
+  onOpenPopover,
+  style
 }) {
   const location = {
     device,
@@ -6551,6 +6570,7 @@ function DropZone({
   };
   return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(DropZoneInner, {
     containerClass: `customify-hb__col customify-hb__col--${colId}`,
+    style: style,
     strategy: rectSortingStrategy,
     orientation: "horizontal",
     location: location,
@@ -6586,7 +6606,8 @@ function DropZoneInner({
   onMove,
   onOpenSection,
   onOpenPopover,
-  emptyHint
+  emptyHint,
+  style
 }) {
   const containerId = `col::${location.device}::${location.row}::${location.col}`;
   const itemIds = items.map(i => `placed::${i.id}`);
@@ -6645,6 +6666,7 @@ function DropZoneInner({
     strategy: strategy,
     children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsxs)("div", {
       ref: setNodeRef,
+      style: style,
       className: `${containerClass}${isOver ? ' is-drag-over' : ''}`,
       onClick: e => {
         if (e.target.closest('.customify-hb__item')) return;

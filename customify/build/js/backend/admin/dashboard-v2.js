@@ -2522,7 +2522,7 @@ function FreeVsPro() {
         // kit K-014).
         description: (0,external_wp_i18n_namespaceObject.__)('Sticky headers, WooCommerce Booster, Blog Pro, custom fonts, and priority support.', 'customify'),
         ctaLabel: (0,external_wp_i18n_namespaceObject.__)('Upgrade to Customify Pro', 'customify'),
-        ctaHref: boot?.urls?.proUpgrade || 'https://pressmaximum.com/customify/pro-upgrade/'
+        ctaHref: boot?.urls?.proUpgradeFreeVsPro || 'https://pressmaximum.com/customify/pro/?utm_source=theme_dashboard&utm_medium=links&utm_campaign=free_vs_pro'
       }
     })]
   });
@@ -4890,7 +4890,7 @@ function mount() {
     }, {
       id: 'pro',
       label: (0,external_wp_i18n_namespaceObject.__)('Upgrade to Pro', 'customify'),
-      href: 'https://pressmaximum.com/customify/pro-upgrade/'
+      href: 'https://pressmaximum.com/customify/pro/?utm_source=theme_dashboard&utm_medium=links&utm_campaign=dashboard_help'
     }],
     helpLabels: {
       triggerLabel: (0,external_wp_i18n_namespaceObject.__)('Open help panel', 'customify'),
