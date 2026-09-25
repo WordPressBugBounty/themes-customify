@@ -1611,7 +1611,7 @@ const DOCS_BASE = 'https://pressmaximum.com/docs/customify/customify-pro-modules
  * (returning the PRO shape sourced from window.customifyDashboard.proModules
  * / a REST endpoint).
  *
- * @return {Array<object>}
+ * @return {Array<object>} Catalogue rows, in display order.
  */
 function useProModules() {
   const base = [{
@@ -1651,8 +1651,13 @@ function useProModules() {
     docHref: DOCS_BASE + 'multiple-headers/'
   }, {
     id: 'mega-menu',
-    name: (0,external_wp_i18n_namespaceObject.__)('Mega Menu', 'customify'),
-    description: (0,external_wp_i18n_namespaceObject.__)('Mega-menu navigation with more space and visual hierarchy.', 'customify'),
+    name: (0,external_wp_i18n_namespaceObject.__)('Mega menu (Legacy)', 'customify'),
+    description: (0,external_wp_i18n_namespaceObject.__)('The classic mega menu: layout-based panels configured in Appearance > Menus.', 'customify'),
+    docHref: DOCS_BASE + 'mega-menu/'
+  }, {
+    id: 'mega-menu-blocksify',
+    name: (0,external_wp_i18n_namespaceObject.__)('Mega menu (Blocks Editor)', 'customify'),
+    description: (0,external_wp_i18n_namespaceObject.__)('Rich mega menu panels built in the block editor with Blocksify.', 'customify'),
     docHref: DOCS_BASE + 'mega-menu/'
   }, {
     id: 'multilingual',

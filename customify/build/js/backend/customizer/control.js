@@ -1658,11 +1658,189 @@ function setupTypographyPresets(deps) {
     init: init
   };
 }
+;// ./src/backend/customizer/js/controls/term-picker.js
+/**
+ * Term picker control - Select2 multi-select fed by admin-ajax.
+ *
+ * Markup: inc/customizer/controls/class-control-term-picker.php
+ * Endpoint: customify_term_picker_ajax_search() in inc/customizer/term-picker.php
+ *
+ * The select carries `.customify-input` + `data-name`, so the generic
+ * customifyField.getFieldValue() reads its value (an array of term IDs as
+ * strings) and the control saves it like any other field. This module only
+ * adds the search UI and keeps the picker in step with its taxonomy setting.
+ */
+
+const $ = window.jQuery;
+
+// Taxonomy setting ids already bound, so a control repaint does not stack
+// a second listener on the same setting.
+const boundSettings = {};
+
+/**
+ * Read a select setting value written by the Customify controls, which
+ * store `encodeURI( JSON.stringify( value ) )`, or a raw PHP value.
+ *
+ * @param {*} raw Setting value.
+ * @return {string} Decoded string.
+ */
+function decodeSettingValue(raw) {
+  if (typeof raw !== 'string') {
+    return raw ? String(raw) : '';
+  }
+  try {
+    const decoded = JSON.parse(decodeURI(raw));
+    return typeof decoded === 'string' ? decoded : raw;
+  } catch {
+    return raw;
+  }
+}
+
+/**
+ * Taxonomy the picker should query right now.
+ *
+ * @param {Object} $select Picker select (jQuery).
+ * @return {string} Taxonomy slug.
+ */
+function currentTaxonomy($select) {
+  const settingId = $select.attr('data-taxonomy-setting');
+  const api = window.wp && window.wp.customize;
+  if (settingId && api && api.has(settingId)) {
+    const value = decodeSettingValue(api(settingId).get());
+    if (value) {
+      return value;
+    }
+  }
+  return $select.attr('data-taxonomy') || '';
+}
+
+/**
+ * Clear every picker bound to a taxonomy setting when that setting changes.
+ * The picker is looked up at change time: a repaint replaces the DOM node.
+ *
+ * @param {string} settingId Taxonomy setting id.
+ * @param {string} fieldName Picker field name (`data-name`).
+ */
+function bindTaxonomySetting(settingId, fieldName) {
+  const api = window.wp && window.wp.customize;
+  const key = settingId + '|' + fieldName;
+  if (!settingId || !api || boundSettings[key]) {
+    return;
+  }
+  boundSettings[key] = true;
+  api(settingId, function (setting) {
+    let last = decodeSettingValue(setting.get());
+    setting.bind(function (value) {
+      const next = decodeSettingValue(value);
+      if (next === last) {
+        return;
+      }
+      last = next;
+      $('select.customify-term-picker').filter(function () {
+        return $(this).attr('data-name') === fieldName;
+      }).each(function () {
+        // The selected IDs belong to the previous taxonomy.
+        $(this).find('option').remove();
+        $(this).trigger('change');
+      });
+    });
+  });
+}
+
+/**
+ * Enhance the picker rendered into a field area.
+ *
+ * @param {Object} $fieldsArea Field container (jQuery).
+ */
+function initTermPicker($fieldsArea) {
+  if (!$fieldsArea || !$fieldsArea.length) {
+    return;
+  }
+  const $select = $fieldsArea.find('select.customify-term-picker').first();
+  if (!$select.length || typeof $.fn.select2 !== 'function') {
+    return;
+  }
+  if ($select.hasClass('select2-hidden-accessible')) {
+    $select.select2('destroy');
+  }
+  const $wrap = $select.closest('.customify-term-picker-wrap');
+  $select.select2({
+    width: '100%',
+    multiple: true,
+    placeholder: $select.attr('data-placeholder') || '',
+    // Body-level popup (Select2's default): the Customizer pane clips
+    // and scrolls, and a popup inside it lands on top of the chips.
+    dropdownCssClass: 'customify-term-picker-dropdown',
+    minimumInputLength: 0,
+    language: {
+      noResults: () => $select.attr('data-no-results') || '',
+      searching: () => $select.attr('data-searching') || '',
+      errorLoading: () => $select.attr('data-error') || ''
+    },
+    ajax: {
+      url: $select.attr('data-ajax-url'),
+      type: 'POST',
+      dataType: 'json',
+      delay: 250,
+      data(params) {
+        return {
+          action: 'customify_term_picker_search',
+          nonce: $select.attr('data-nonce'),
+          taxonomy: currentTaxonomy($select),
+          q: params.term || '',
+          page: params.page || 1
+        };
+      },
+      processResults(response) {
+        if (response && response.success && response.data) {
+          return response.data;
+        }
+        return {
+          results: []
+        };
+      }
+    }
+  });
+
+  // Typing in Select2's inline search box must not reach the control's
+  // delegated `keyup` handler: it would re-save the unchanged value on
+  // every keystroke. The select's own `change` still bubbles.
+  $wrap.on('keyup input', '.select2-search__field', function (event) {
+    event.stopPropagation();
+  });
+
+  // Removing a chip should not pop the result list open.
+  // Select2 opens synchronously right after the unselect, so the guard only
+  // lives for this tick and never blocks a later, deliberate open.
+  $select.on('select2:unselect', function () {
+    const block = event => event.preventDefault();
+    $select.one('select2:opening', block);
+    window.setTimeout(() => $select.off('select2:opening', block), 0);
+  });
+
+  // Keep the picked order: Select2 re-sorts to <option> order, so move a
+  // newly picked option to the end.
+  $select.on('select2:select', function (event) {
+    const id = event.params && event.params.data ? event.params.data.id : '';
+    if (!id) {
+      return;
+    }
+    const $option = $select.find('option').filter(function () {
+      return $(this).val() === String(id);
+    });
+    if ($option.length) {
+      $option.detach().appendTo($select);
+      $select.trigger('change');
+    }
+  });
+  bindTaxonomySetting($select.attr('data-taxonomy-setting'), $select.attr('data-name'));
+}
 ;// ./src/backend/customizer/js/control.js
 // React modules bundled into this control bundle.
 
 // Typography control split out into its own file for readability;
 // still bundled into this entry, still called inside IIFE 2 below.
+
 
 
 
@@ -1691,7 +1869,29 @@ function setupTypographyPresets(deps) {
     sections.sort(api.utils.prioritySort).reverse();
     $.each(sections, function (i, section) {
       var parentContainer = $("#sub-accordion-section-" + section.params.section);
-      parentContainer.children(".section-meta").after(section.headContainer);
+      if ("bottom" === section.params.customify_placement) {
+        var placementControlId = "customize-control-" + section.id + "-placement";
+        var placementControl = $("#" + placementControlId);
+        section.headContainer.addClass("customify-section-placement-source");
+        if (!placementControl.length) {
+          placementControl = $("<li>", {
+            id: placementControlId,
+            class: "customize-control customify-section-link-control"
+          });
+          $("<button>", {
+            type: "button",
+            class: "customify-section-link",
+            "aria-controls": "sub-accordion-section-" + section.id
+          }).text(section.params.title).on("click", function (event) {
+            event.preventDefault();
+            section.expand();
+          }).appendTo(placementControl);
+        }
+        placementControl.toggle(section.active()).appendTo(parentContainer);
+      } else {
+        section.headContainer.removeClass("customify-section-placement-source");
+        parentContainer.children(".section-meta").after(section.headContainer);
+      }
     });
 
     // Reflow panels
@@ -1789,19 +1989,74 @@ function setupTypographyPresets(deps) {
       var section = this;
       section.expanded.bind(function (expanded) {
         var parent = api.section(section.params.section);
+        var parentNode;
+        var restoreParentPosition;
+        if (!parent) {
+          return;
+        }
         if (expanded) {
           parent.contentContainer.addClass("current-section-parent");
+        } else if ("bottom" === section.params.customify_placement) {
+          // Parent expansion collapses this nested section before the
+          // parent's `open` class is added. Keep the parent on the left
+          // until that class exists so both panes animate without a gap.
+          parentNode = parent.contentContainer.get(0);
+          restoreParentPosition = function () {
+            if (!parent.contentContainer.hasClass("open")) {
+              return;
+            }
+            parent.contentContainer.removeClass("current-section-parent");
+            section.contentContainer.removeClass("customify-section-returning");
+            if (section.customifyParentPositionObserver) {
+              section.customifyParentPositionObserver.disconnect();
+              section.customifyParentPositionObserver = null;
+            }
+          };
+          if (parent.contentContainer.hasClass("open")) {
+            restoreParentPosition();
+          } else if (window.MutationObserver && parentNode) {
+            if (section.customifyParentPositionObserver) {
+              section.customifyParentPositionObserver.disconnect();
+            }
+            section.customifyParentPositionObserver = new window.MutationObserver(restoreParentPosition);
+            section.customifyParentPositionObserver.observe(parentNode, {
+              attributes: true,
+              attributeFilter: ["class"]
+            });
+          } else {
+            _.defer(function () {
+              parent.contentContainer.removeClass("current-section-parent");
+            });
+          }
         } else {
           parent.contentContainer.removeClass("current-section-parent");
         }
       });
       section.container.find(".customize-section-back").off("click keydown").on("click keydown", function (event) {
+        var parent;
+        var sidebarContent;
         if (api.utils.isKeydownButNotEnterEvent(event)) {
           return;
         }
         event.preventDefault(); // Keep this AFTER the key filter above
-        if (section.expanded()) {
-          api.section(section.params.section).expand();
+        parent = api.section(section.params.section);
+        if (section.expanded() && parent) {
+          sidebarContent = section.contentContainer.closest(".wp-full-overlay-sidebar-content");
+          if ("bottom" === section.params.customify_placement) {
+            // Hold the nested pane in place while core prepares the
+            // parent. Both panes start moving when the parent opens.
+            section.contentContainer.addClass("customify-section-returning");
+          }
+          parent.expand({
+            completeCallback: function () {
+              // Core focuses the parent Back button while the
+              // nested panes are still transitioning. Reset the
+              // horizontal position after both panes settle so the
+              // restored parent is not clipped on the left.
+              sidebarContent.scrollLeft(0);
+              section.contentContainer.removeClass("customify-section-returning");
+            }
+          });
         }
       });
     },
@@ -1812,6 +2067,10 @@ function setupTypographyPresets(deps) {
       }
       _sectionEmbed.call(this);
       var section = this;
+      if ("bottom" === section.params.customify_placement) {
+        section.headContainer.addClass("customify-section-placement-source");
+        return;
+      }
       var parentContainer = $("#sub-accordion-section-" + this.params.section);
       parentContainer.append(section.headContainer);
     },
@@ -2790,6 +3049,9 @@ function setupTypographyPresets(deps) {
           break;
         case "css_ruler":
           control.initCSSRuler($fieldsArea, cb);
+          break;
+        case "term_picker":
+          initTermPicker($fieldsArea);
           break;
       }
       if (field.type !== "hidden") {
